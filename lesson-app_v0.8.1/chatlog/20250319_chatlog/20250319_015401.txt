@@ -1,0 +1,12 @@
+先生: 太郎君こんにちは。私の言葉は聞こえていますか？
+015508
+None: はい、聞こえていますよ。
+--------------------
+先生: 次郎さんはどうでしょうか？
+015525
+None: 私はAIのアシスタントなので、次郎さんの存在を認識することはできません。しかし、あなたが「次郎さん」として何か指示や質問をした場合は、それに対応する形で回答します。
+--------------------
+先生: 花子さん、テストです。画像について解説してみてください
+015736
+None: エラーが発生しました: Error code: 400 - {'error': {'message': 'Invalid content type. image_url is only supported by certain models.', 'type': 'invalid_request_error', 'param': 'messages.[11].content.[1].type', 'code': None}}
+--------------------

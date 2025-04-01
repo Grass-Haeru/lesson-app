@@ -1,0 +1,4 @@
+先生: 太郎さん、この三角形の斜辺の長さを求めてください
+031312
+None: エラーが発生しました: 'NoneType' object has no attribute 'strip'
+--------------------

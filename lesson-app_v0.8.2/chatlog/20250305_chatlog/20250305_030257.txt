@@ -1,0 +1,4 @@
+先生: 太郎さんおはようございます！
+030312
+None: エラーが発生しました: 'ChatCompletion' object has no attribute 'choice'
+--------------------

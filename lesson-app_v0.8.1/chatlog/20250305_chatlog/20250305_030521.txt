@@ -1,0 +1,4 @@
+先生: 太郎さんおはようございます！宿題はやってきましたか？
+030537
+None: エラーが発生しました: 'ChatCompletion' object is not subscriptable
+--------------------

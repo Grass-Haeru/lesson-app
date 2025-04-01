@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson Chat Interface</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f7f7f7;
+    }
+    .container {
+        display: flex;
+        max-width: 900px;
+        margin: 20px auto;
+    }
+
+    .settings-box {
+        width: 30%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        background-color: #f1f1f1;
+        box-sizing: border-box;
+        margin-right: 10px;
+    }
+
+    .settings-box label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .settings-box select,
+    .settings-box input {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+
+    .chat-box {
+        width: 70%;
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        background-color: #f9f9f9;
+        box-sizing: border-box;
+        position: relative;
+    }
+
+    .chat-header {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px;
+        font-size: 1.2em;
+        font-weight: bold;
+        background-color: #e9ecef;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .teacher-header {
+        text-align: left;
+    }
+
+    .student-header {
+        text-align: right;
+    }
+
+    .chat-container {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding: 10px;
+    }
+
+    .bubble {
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 10px;
+        max-width: 80%;
+        box-sizing: border-box;
+    }
+
+    .teacher {
+        background-color: #e0e0e0;
+        text-align: left;
+    }
+    .student-1 {
+        background-color: #f8d7da;
+        text-align: left;
+        margin-left: auto;
+    }
+    .student-2 {
+        background-color: #d4edda;
+        text-align: left;
+        margin-left: auto;
+    }
+    .student-3 {
+        background-color: #fff3cd;
+        text-align: left;
+        margin-left: auto;
+    }
+    .student-4 {
+        background-color: #d1ecf1;
+        text-align: left;
+        margin-left: auto;
+    }
+    .message {
+        font-size: 1em;
+    }
+    #inputForm {
+        display: flex;
+        padding: 10px;
+        border-top: 1px solid #ccc;
+        background-color: #fff;
+        box-sizing: border-box;
+    }
+
+    #message {
+        flex-grow: 1;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 10px 0 0 10px;
+        box-sizing: border-box;
+    }
+
+    #submitButton {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-left: none;
+        border-radius: 0 10px 10px 0;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        box-sizing: border-box;
+    }
+
+    #submitButton:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    @media screen and (max-width: 600px) {
+        .container {
+            flex-direction: column;
+        }
+
+        .settings-box {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .chat-box {
+            width: 100%;
+        }
+    }
+
+    .additional-settings {
+    margin-top: 10px;
+    border-top: 1px solid #ccc;
+    padding-top: 10px;
+    display: none;
+    }
+
+    .toggle-button {
+        display: block;
+        margin: 10px 0;
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+    }
+    .toggle-button:hover {
+        background-color: #0056b3;
+    }
+    .toggle-button:focus {
+        outline: none;
+    }
+    .info-section {
+        margin: 0 0 10px;
+        font-size: 1.2em;
+        font-weight: bold;
+    }
+    .info-section label{
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .info-section select,
+    .info-section input{
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 10px;
+        border: 1px solid#ccc;
+        border-radius: 5px;
+        box-sizing: border-box;
+    }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- 左側の設定ボックス -->
+        <div class="settings-box">
+            <label for="grade">学年を選択:</label>
+            <select id="grade">
+                <option value="" selected disabled>選択してください</option>
+                <option value="中学１年生">中学1年</option>
+                <option value="中学２年生">中学2年</option>
+                <option value="中学３年生">中学3年</option>
+                <option value="高校１年生">高校1年</option>
+                <option value="高校２年生">高校2年</option>
+                <option value="高校３年生">高校3年</option>
+            </select>
+
+            <label for="subject">教科を選択:</label>
+            <select id="subject">
+                <option value="" selected disabled>選択してください</option>
+                <option value="数学">数学</option>
+                <option value="理科">理科</option>
+            </select>
+
+            <label for="target">指導目標を入力:</label>
+            <input type="text" id="target" placeholder="入力してください">
+
+            <label for="view">生徒観を入力:</label>
+            <input type="text" id="view" placeholder="入力してください">
+
+            <label for="Taro_level">太郎:</label>
+            <select id="Taro_level">
+                <option value="" selected disabled>選択してください</option>
+                <option value="a">得意</option>
+                <option value="b">苦手</option>
+                <option value="c">普通</option>
+                <option value="d">カスタム</option>
+            </select>
+
+            <label for="Hanako_level">花子:</label>
+            <select id="Hanako_level">
+                <option value="" selected disabled>選択してください</option>
+                <option value="a">得意</option>
+                <option value="b">苦手</option>
+                <option value="c">普通</option>
+                <option value="d">カスタム</option>
+            </select>
+
+            <label for="Jiro_level">次郎:</label>
+            <select id="Jiro_level">
+                <option value="" selected disabled>選択してください</option>
+                <option value="a">得意</option>
+                <option value="b">苦手</option>
+                <option value="c">普通</option>
+                <option value="d">カスタム</option>
+            </select>
+
+            <label for="Misaki_level">美咲:</label>
+            <select id="Misaki_level">
+                <option value="" selected disabled>選択してください</option>
+                <option value="a">得意</option>
+                <option value="b">苦手</option>
+                <option value="c">普通</option>
+                <option value="d">カスタム</option>
+            </select>
+
+            <button id="toggleButton" class="toggle-button">追加設定を表示</button>
+
+         <!-- 追加設定セクション -->
+            <div id="additionalSettings" class="additional-settings">
+                <label for="correct">正答率:</label>
+                <input type="range" id="correct" name="correct" min="0" max="100" step="5" value="25">
+                <span id="correctValue">25</span>
+
+                <br><br>
+
+                <button onclick="setcorrectValues()">正答率の調整</button>
+
+                <br><br>
+
+                <label for="wrong">誤答率:</label>
+                <input type="range" id="wrong" name="wrong" min="0" max="100" step="5" value="25">
+                <span id="wrongValue">25</span>
+
+                <br><br>
+
+                <button onclick="setwrongValues()">誤答率の調整</button>
+
+                <br><br>
+
+                <label for="idk">分からない率:</label>
+                <input type="range" id="idk" name="idk" min="0" max="100" step="5" value="50">
+                <span id="idkValue">50</span>
+
+                <br><br>
+
+                <button onclick="setidkValues()">分からない率の調整</button>
+            </div>    
+        </div>
+
+        <!-- 右側のチャットボックス -->
+        <div class="chat-box">
+            <div class="chat-header">
+                <span class="teacher-header">先生</span>
+                <span class="student-header">生徒</span>
+            </div>
+            <div class="chat-container" id="chat-container">
+                <!-- チャットメッセージがここに表示されます -->
+            </div>
+            <form id="inputForm">
+                <input type="text" id="message" placeholder="先生からの質問を入力してください">
+                <button type="submit" id="submitButton">送信</button>
+            </form>
+            
+                <input type="radio" id="not_image" name="send_image" value="0" checked>
+                <label for="not_image">画像を送信しない</label>
+                <input type="radio" id="image" name="send_image"value="1">
+                <label for="image">画像を送信する</label>
+
+            <input type="file" id="imageInput" accept="image/png">
+
+            <!--<div class="info-section">
+                <label for="nomination">指名する生徒を選択:</label>
+                <select id="nomination">
+                    <option value="0">ランダム</option>
+                    <option value="1">太郎</option>
+                    <option value="2">花子</option>
+                    <option value="3">次郎</option>
+                    <option value="4">美咲</option>
+                </select>
+            </div>-->
+
+        </div>
+    </div>
+    
+    <script>
+        const toggleButton = document.getElementById('toggleButton');
+        const additionalSettings = document.getElementById('additionalSettings');
+
+        const correctInput = document.getElementById('correct');
+        const correctValue = document.getElementById('correctValue');
+
+        correctInput.addEventListener('input', function() {
+            correctValue.textContent = correctInput.value;
+        });
+
+        const wrongInput = document.getElementById('wrong');
+        const wrongValue = document.getElementById('wrongValue');
+
+        wrongInput.addEventListener('input', function() {
+            wrongValue.textContent = wrongInput.value;
+        });
+
+        const idkInput = document.getElementById('idk');
+        const idkValue = document.getElementById('idkValue');
+
+        idkInput.addEventListener('input', function() {
+            idkValue.textContent = idkInput.value;
+        });
+
+        function setcorrectValues() {
+            const idkRate = parseInt(idkValue.textContent); // 分からない率
+            const wrongRate = parseInt(wrongValue.textContent); // 誤答率
+
+            if (idkRate + wrongRate > 100) {
+                alert('誤答率と分からない率の和が100以下になるようにしてください。');
+                return;
+            }
+
+        // 残りの割合を正答率として設定
+            const correctRate = 100 - (idkRate + wrongRate);
+
+        // 正答率のスライダーを更新
+            correctInput.value = correctRate;
+            correctValue.textContent = correctRate; //　正答率を表示
+        }
+
+        function setwrongValues() {
+            const correctRate = parseInt(correctValue.textContent); // 正答率
+            const idkRate = parseInt(idkValue.textContent); // 分からない率
+
+            if (correctRate + idkRate > 100) {
+                alert('正答率と分からない率の和が100以下になるようにしてください。');
+                return;
+            }
+
+        // 残りの割合を誤答率として設定
+            const wrongRate = 100 - (correctRate + idkRate);
+
+        // 誤答率のスライダーを更新
+            wrongInput.value = wrongRate;
+            wrongValue.textContent = wrongRate; // 誤答率を表示
+        }
+
+        function setidkValues() {
+            const correctRate = parseInt(correctValue.textContent); // 正答率
+            const wrongRate = parseInt(wrongValue.textContent); // 誤答率
+
+            if (correctRate + wrongRate > 100) {
+                alert('正答率と誤答率の和が100以下になるようにしてください。');
+                return;
+            }
+
+        // 残りの割合をわからない率として設定
+            const idkRate = 100 - (correctRate + wrongRate);
+
+        // わからない率のスライダーを更新
+            idkInput.value = idkRate;
+            idkValue.textContent = idkRate; // わからない率を表示
+        }
+
+        toggleButton.addEventListener('click', () => {
+            const isHidden = additionalSettings.style.display === 'none';
+            additionalSettings.style.display = isHidden ? 'block' : 'none';
+            toggleButton.textContent = isHidden ? '追加設定を非表示' : '追加設定を表示';
+        });
+
+        const studentNames = ["太郎", "花子", "次郎", "美咲"];
+
+        document.getElementById('inputForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            
+            const messageInput = document.getElementById('message');
+            const message = messageInput.value.trim();
+            const targetInput = document.getElementById('target');
+            const target = targetInput.value.trim();
+            const viewInput = document.getElementById('view');
+            const view = viewInput.value.trim();
+            const grade = document.getElementById('grade').value;
+            const subject = document.getElementById('subject').value;
+
+            const Taro_level = document.getElementById('Taro_level').value;
+            const Hanako_level = document.getElementById('Hanako_level').value;
+            const Jiro_level = document.getElementById('Jiro_level').value;
+            const Misaki_level = document.getElementById('Misaki_level').value;
+
+            const correctInput = document.getElementById('correct');
+            const wrongInput = document.getElementById('wrong');
+            const idkInput = document.getElementById('idk');
+
+            let Taro_correctRate = correctInput.value;
+            let Taro_wrongRate = wrongInput.value;
+            let Taro_idkRate = idkInput.value;
+            let Hanako_correctRate = correctInput.value;
+            let Hanako_wrongRate = wrongInput.value;
+            let Hanako_idkRate = idkInput.value;
+            let Jiro_correctRate = correctInput.value;
+            let Jiro_wrongRate = wrongInput.value;
+            let Jiro_idkRate = idkInput.value;
+            let Misaki_correctRate = correctInput.value;
+            let Misaki_wrongRate = wrongInput.value;
+            let Misaki_idkRate = idkInput.value;
+
+            if (Taro_level=='a'){
+                Taro_correctRate='80';
+                Taro_wrongRate='5';
+                Taro_idkRate='15';
+            }else if (Taro_level=='b'){
+                Taro_correctRate='40';
+                Taro_wrongRate='20';
+                Taro_idkRate='40';
+            }else if (Taro_level=='c'){
+                Taro_correctRate='60';
+                Taro_wrongRate='10';
+                Taro_idkRate='30';
+            }
+
+            if (Hanako_level=='a'){
+                Hanako_correctRate='80';
+                Hanako_wrongRate='5';
+                Hanako_idkRate='15';
+            }else if (Hanako_level=='b'){
+                Hanako_correctRate='40';
+                Hanako_wrongRate='20';
+                Hanako_idkRate='40';
+            }else if (Hanako_level=='c'){
+                Hanako_correctRate='60';
+                Hanako_wrongRate='10';
+                Hanako_idkRate='30';
+            }
+
+            if (Jiro_level=='a'){
+                Jiro_correctRate='80';
+                Jiro_wrongRate='5';
+                Jiro_idkRate='15';
+            }else if (Jiro_level=='b'){
+                Jiro_correctRate='40';
+                Jiro_wrongRate='20';
+                Jiro_idkRate='40';
+            }else if (Jiro_level=='c'){
+                Jiro_correctRate='60';
+                Jiro_wrongRate='10';
+                Jiro_idkRate='30';
+            }
+
+            if (Misaki_level=='a'){
+                Misaki_correctRate='80';
+                Misaki_wrongRate='5';
+                Misaki_idkRate='15';
+            }else if (Misaki_level=='b'){
+                Misaki_correctRate='40';
+                Misaki_wrongRate='20';
+                Misaki_idkRate='40';
+            }else if (Misaki_level=='c'){
+                Misaki_correctRate='60';
+                Misaki_wrongRate='10';
+                Misaki_idkRate='30';
+            }
+
+            if (message === "") {
+                return;
+            }
+
+            if(!Taro_level){
+                alert('生徒観を選択してください。');
+                return;
+            }
+
+            if(!Hanako_level){
+                alert('生徒観を選択してください。');
+                return;
+            }
+
+            if(!Jiro_level){
+                alert('生徒観を選択してください。');
+                return;
+            }
+
+            if(!Misaki_level){
+                alert('生徒観を選択してください。');
+                return;
+            }
+
+            if (!grade || !subject) {
+                alert('学年と教科を選択してください。');
+                return;
+            }
+
+            // 先生のメッセージをチャットに追加
+            const chatContainer = document.getElementById('chat-container');
+            const teacherMessage = document.createElement('div');
+            teacherMessage.classList.add('bubble', 'teacher');
+            teacherMessage.innerHTML = `<div class="message">先生:${message}</div>`;
+            chatContainer.appendChild(teacherMessage);
+
+            // 画像ファイルが選択されている場合、Base64エンコードして追加
+            const imageRadio = document.querySelector('input[name="send_image"]:checked');  // ラジオボタンで選ばれている項目を取得
+            const imageInput = document.querySelector('input[type="file"]');
+            
+            if (imageRadio && imageRadio.value === '1' && imageInput && imageInput.files.length > 0) {//画像を送る方を選択している場合、formDataに画像を追加する
+                const file = imageInput.files[0];
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const base64Image = e.target.result.split(',')[1];
+
+                                // FormDataの作成
+                    const formData = new FormData();
+                    formData.append('question', message);
+                    formData.append('target', target);
+                    formData.append('view', view);
+                    formData.append('num_students', 1);
+                    formData.append('grade', grade);
+                    formData.append('subject', subject);
+                    formData.append('Taro_correct', Taro_correctRate);
+                    formData.append('Taro_wrong', Taro_wrongRate);
+                    formData.append('Taro_idk', Taro_idkRate);
+                    formData.append('Hanako_correct', Hanako_correctRate);
+                    formData.append('Hanako_wrong', Hanako_wrongRate);
+                    formData.append('Hanako_idk', Hanako_idkRate);
+                    formData.append('Jiro_correct', Jiro_correctRate);
+                    formData.append('Jiro_wrong', Jiro_wrongRate);
+                    formData.append('Jiro_idk', Jiro_idkRate);
+                    formData.append('Misaki_correct', Misaki_correctRate);
+                    formData.append('Misaki_wrong', Misaki_wrongRate);
+                    formData.append('Misaki_idk', Misaki_idkRate);
+
+                    formData.append('image', base64Image);
+            
+
+                    // サーバーに送信
+                    fetch('/chat', {
+                        method: 'POST',
+                        body: formData
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`Network response was not ok: ${response.statusText}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // デバッグ: サーバーからのレスポンスをログに出力
+                            console.log('Received response:', data);
+
+                        // Pythonサーバーからのレスポンスを処理 ('answers'は配列として想定)
+                        if (data.answers && Array.isArray(data.answers)) {
+                            const response = data.answers[0];
+                            if (response && response.message) {
+                                const studentIndex = data.answers[0].name; 
+                                const studentName = studentNames[studentIndex-1];
+                                const studentMessage = document.createElement('div');
+                                studentMessage.classList.add('bubble', `student-${studentIndex}`);
+                                studentMessage.innerHTML = `<div class="message">${response.message}</div>`;
+                                chatContainer.appendChild(studentMessage);
+                                chatContainer.scrollTop = chatContainer.scrollHeight;
+                            } else {
+                                console.error('Response format is missing message:', response);
+                            }
+                        } else {
+                            console.error('Unexpected response format:', data);
+                        }
+
+                        // 入力欄をクリア
+                        messageInput.value = '';
+                    })
+                    .catch(error => {
+                        console.error('Error during fetch:', error);
+                        alert('サーバーとの通信中にエラーが発生しました。詳細はコンソールを確認してください。');
+                    });
+                };
+                reader.readAsDataURL(file);
+         } else {
+                // 画像がない場合は即座に送信
+                const formData = new FormData();
+                formData.append('question', message);
+                formData.append('target', target);
+                formData.append('view', view);
+                formData.append('num_students', 1);
+                formData.append('grade', grade);
+                formData.append('subject', subject);
+                formData.append('Taro_correct', Taro_correctRate);
+                formData.append('Taro_wrong', Taro_wrongRate);
+                formData.append('Taro_idk', Taro_idkRate);
+                formData.append('Hanako_correct', Hanako_correctRate);
+                formData.append('Hanako_wrong', Hanako_wrongRate);
+                formData.append('Hanako_idk', Hanako_idkRate);
+                formData.append('Jiro_correct', Jiro_correctRate);
+                formData.append('Jiro_wrong', Jiro_wrongRate);
+                formData.append('Jiro_idk', Jiro_idkRate);
+                formData.append('Misaki_correct', Misaki_correctRate);
+                formData.append('Misaki_wrong', Misaki_wrongRate);
+                formData.append('Misaki_idk', Misaki_idkRate);
+
+                fetch('/chat', {
+                    method: 'POST',
+                    body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Network response was not ok: ${response.statusText}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // デバッグ: サーバーからのレスポンスをログに出力
+                        console.log('Received response:', data);
+
+                    // Pythonサーバーからのレスポンスを処理 ('answers'は配列として想定)
+                    if (data.answers && Array.isArray(data.answers)) {
+                        const response = data.answers[0];
+                        if (response && response.message) {
+                            const studentIndex = data.answers[0].name; 
+                            const studentName = studentNames[studentIndex-1];
+                            const studentMessage = document.createElement('div');
+                            studentMessage.classList.add('bubble', `student-${studentIndex}`);
+                            studentMessage.innerHTML = `<div class="message">${response.message}</div>`;
+                            chatContainer.appendChild(studentMessage);
+                            chatContainer.scrollTop = chatContainer.scrollHeight;
+                        } else {
+                            console.error('Response format is missing message:', response);
+                        }
+                    } else {
+                        console.error('Unexpected response format:', data);
+                    }
+
+                    // 入力欄をクリア
+                    messageInput.value = '';
+                })
+                .catch(error => {
+                    console.error('Error during fetch:', error);
+                    alert('サーバーとの通信中にエラーが発生しました。詳細はコンソールを確認してください。');
+            });
+        }
+        });
+
+
+
+        // DOCTYPE宣言の追加
+        if (!document.doctype) {
+            console.warn('ページがクイークスモードでレンダリングされている可能性があります。適切なレイアウトを保証するために、<!DOCTYPE html> を追加してください。');
+        } else if (document.doctype.name !== 'html') {
+            console.warn('予期しないDOCTYPEが使用されています。<!DOCTYPE html> の使用を推奨します。');
+        }
+
+    </script>
+</body>
+</html>
