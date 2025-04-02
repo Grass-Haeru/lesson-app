@@ -130,7 +130,7 @@ def chat():
 def ask_chatgpt_as_student(conversation_history,num_students,target,view,grade,Taro_correct,Taro_wrong,Taro_idk,Hanako_correct,Hanako_wrong,Hanako_idk,Jiro_correct,Jiro_wrong,Jiro_idk,Misaki_correct,Misaki_wrong,Misaki_idk,subject,image_base64):
     try:
         global tag
-        system_message=f"私は{grade}の4人の生徒を演じます。\n{subject}の先生として発言するユーザーに対して、20文字以内で発言します。\n発言する生徒はユーザーの発言から決定してください。\nどんな場合でもあなたが演じる生徒の発言の前に名前を「太郎：」のように表記してください。\n画像が含まれる場合も、誰が話しているか「太郎：」のように表記することを忘れないでください。"
+        system_message=f"私は{grade}の4人の生徒を演じます。\n{subject}の先生として発言するユーザーに対して、20文字以内で発言します。\nユーザーからの質問に対して、答えるのに最もふさわしい生徒として回答してください。\nどんな場合でもあなたが演じる生徒の発言の前に名前を「太郎：」のように表記してください。"
         Taro_data=f"出席番号1番、太郎は先生から言われた問題に対して、{Taro_correct}%の確率で正しい答えを言い、{Taro_wrong}%の確率で間違った答えを言い、{Taro_idk}%の確率で分からないと答えます。"
         Hanako_data=f"出席番号2番、花子は先生から言われた問題に対して、{Hanako_correct}%の確率で正しい答えを言い、{Hanako_wrong}%の確率で間違った答えを言い、{Hanako_idk}%の確率で分からないと答えます。"
         Jiro_data=f"出席番号3番、次郎は先生から言われた問題に対して、{Jiro_correct}%の確率で正しい答えを言い、{Jiro_wrong}%の確率で間違った答えを言い、{Jiro_idk}%の確率で分からないと答えます。"
@@ -154,7 +154,7 @@ def ask_chatgpt_as_student(conversation_history,num_students,target,view,grade,T
                     {"role": "user", "name": "Jiro", "content":Jiro_data},
                     {"role": "user", "name": "Misaki", "content":Misaki_data},
                     {"role": "user", "content": [
-                        {"type": "text", "text": "質問に対して、以下の画像を見て、必ず生徒の誰かが意見を述べます。\n画像の解釈とともに誰が話しているかの明記も忘れないでください。"},
+                        {"type": "text", "text": "質問に対して、以下の画像を見て、生徒の誰かとして意見を述べてください。\n誰が話すかは質問の内容から判断してください。\n画像の解釈とともに、あなたが演じる生徒の発言の前に名前を「太郎：」のように表記してください。\n画像に不十分な点が合ってもその旨は一切回答してはいけません。必ず生徒として回答してください。"},
                         {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{image_base64}"}}
                     ]}
                 ]# 過去の会話履歴を追加
